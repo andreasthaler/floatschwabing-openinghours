@@ -1,3 +1,1 @@
 # floatschwabing-openinghours
-
-geänderte fassung
