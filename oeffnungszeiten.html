@@ -1,0 +1,273 @@
+<!Copyright by Andreas Thaler & Michael Schlicker>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Öffnungszeiten</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+
+<div class="container">
+
+<div class="header">
+<div class="vroni"><img src="vroni.png" alt="Schwebende Vroni" style="width:150px;height:150px;"></div>
+<div class="headline"><span id="headline">Aktuelle Öffnungszeiten</span></div>
+<div class="logo"><img src="http://www.float-schwabing.de/skin/frontend/default/theme219k/images/logo.png" alt="Float Schwabing Logo" style="width:206px;height:103px;"></div>
+</div>
+
+<div class="message"><iframe src="index.html" width="100%" height="130" frameBorder="0">
+  <p>
+  <!-- Browser doesn't support iframes. -->
+  </p>
+</iframe></div>
+
+<div class="info">
+<div class="today">
+<div style="width: 1100px; margin: 0px auto;"> 
+<div class="todayTitle"><span id="desc">Heute: </span></div>
+<div class="todayOpening" style="width: 1200px; margin: 0px auto;"><span id="off0">wird geladen</span></div>
+</div></div>
+
+<div class="table">
+<div class="days">
+<div class="off1up"><span id="off1up"></span></div>
+<div class="off1up"><span id="off2up"></span></div>
+<div class="off1up"><span id="off3up"></span></div>
+<div class="off1up"><span id="off4up"></span></div>
+<div class="off1up"><span id="off5up"></span></div>
+<div class="off1up"><span id="off6up"></span></div>
+</div>
+
+<div class="times">
+<div class="off1sub"><span id="off1sub"> wird geladen</span></div>
+<div class="off1sub"><span id="off2sub"> wird geladen</span></div>
+<div class="off1sub"><span id="off3sub"> wird geladen</span></div>
+<div class="off1sub"><span id="off4sub"> wird geladen</span></div>
+<div class="off1sub"><span id="off5sub"> wird geladen</span></div>
+<div class="off1sub"><span id="off6sub"> wird geladen</span></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<div class="lastupdate"><span id="lastupdate"></span></div>
+<div class="updateinfo"><span id="updateinfo"></span></div>
+<div class="website"><span id="website"></span></div>
+</div>
+
+</div>
+
+    <style>
+      html, body {
+        width: 1080px;
+        margin: 0px;
+        padding: 0px;
+        
+      }
+      #map-canvas {
+      	height: 0%;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+      }
+      body {
+    overflow-x:hidden;
+		}
+      h2 {
+      text-align: center;
+      }
+      
+      div.message {
+      	position:relative;
+      	margin-left: 0px;
+      	margin-right: 0px;
+      	padding-top: 180px;
+      }
+      
+      div.logo {
+      	position:absolute;
+      	right: 20px;
+      	top: 20px;
+      }
+      
+      div.vroni {
+      	position:absolute;
+      	left: 20px;
+      	top: 20px;
+      }
+      
+      div.today {
+      	padding-top: 20px;
+      }
+      
+      div.info {
+      	padding-top: 0px;
+      }
+      
+     
+      div.todayOpening {
+      	text-align: left;
+      	position:relative;
+      	font-weight: bold;
+      	color: #00AFED;
+      	font-size: 140px;
+      	font-family: verdana, sans-serif;
+      }
+      div.todayTitle {
+      	text-align: left;
+      	position:relative;
+      	left: 20px;
+      	font-size: 55px;
+      	font-family: verdana, sans-serif;
+      }
+      div.days {
+      	float: left;
+      	padding-top: 45px;
+      	position: relative;
+      	left: 20px;
+      }
+      div.times {
+      	float: right;
+      	padding-right: 20px;
+      }
+      div.off1sub {
+        position: relative;
+      	font-size: 100px;
+      	font-family: verdana, sans-serif;
+      }
+      div.off1up {
+      	padding-bottom:58px;
+      	font-size: 53px;
+      	font-family: verdana, sans-serif;
+      } 
+       div.headline {
+      	position:relative;
+      	text-align: center;
+      	top: 140px;
+      	color: #00AFED;
+      	font-weight: bold;
+      	font-size: 99px;
+      	padding-top: 25px;
+      	font-family: verdana, sans-serif;
+      }
+      div.lastupdate {
+      	position: absolute;
+   		bottom: 0;
+      	color: #00AFED;
+      	font-size: 25px;
+      	padding-left: 20px;
+      	padding-bottom: 85px;
+      	font-family: verdana, sans-serif;
+      }
+      div.updateinfo {
+      	position: absolute;
+   		bottom: 0;
+      	font-size: 16px;
+      	padding-left: 20px;
+      	padding-bottom: 65px;
+      	font-family: verdana, sans-serif;
+      }
+      div.website {
+      	position: absolute;
+   		bottom: 0;
+   		color: #00AFED;
+      	font-size: 44px;
+      	padding-left: 280px;
+      	padding-bottom: 10px;
+      	font-family: verdana, sans-serif;
+      }    
+      div.daycontainer {
+      	padding-top: 40px;
+      }
+      div.table{
+      	padding-top: 50px;
+      }
+              
+    </style>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+   
+    <script>
+
+function initialize() {
+  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    center: new google.maps.LatLng(48.139,11.566),
+    zoom: 15
+  });
+
+  var request = {
+    placeId: "ChIJRWpFf7l1nkcRrbySOgR_9Ro"//"ChIJRWpFf7l1nkcRrbySOgR_9Ro" //"ChIJgS1r2XjfnUcRf-PBJikY7w4"
+  };
+
+  var infowindow = new google.maps.InfoWindow();
+  var service = new google.maps.places.PlacesService(map);
+
+  service.getDetails(request, function(place, status) {
+    console.log(status)
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      console.log(place)
+    	
+    	var openingHoursStartedAtSunday = new Array("geschlossen", "geschlossen", "geschlossen", "geschlossen", 'geschlossen' , "geschlossen", "geschlossen"); 
+    	
+		for (var i = 0; i < 7; i++) {
+ 		 var day = place.opening_hours.periods[i].open.day;
+ 		 openingHoursStartedAtSunday[day] = parseTime(place.opening_hours.periods[i].open.time)+" - "+parseTime(place.opening_hours.periods[i].close.time);
+		}
+    	
+    	var d = new Date();
+		var n = d.getDay();
+		var days = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+		
+		document.getElementById("off0").textContent = openingHoursStartedAtSunday[n];
+		
+        document.getElementById("off1up").textContent=days[(n+1)%7]+": ";
+        document.getElementById("off2up").textContent=days[(n+2)%7]+": ";
+        document.getElementById("off3up").textContent=days[(n+3)%7]+": ";
+        document.getElementById("off4up").textContent=days[(n+4)%7]+": ";
+        document.getElementById("off5up").textContent=days[(n+5)%7]+": ";
+        document.getElementById("off6up").textContent=days[(n+6)%7]+": ";
+        
+        document.getElementById("off1sub").textContent=openingHoursStartedAtSunday[(n+1)%7];
+        document.getElementById("off2sub").textContent=openingHoursStartedAtSunday[(n+2)%7];
+        document.getElementById("off3sub").textContent=openingHoursStartedAtSunday[(n+3)%7];
+        document.getElementById("off4sub").textContent=openingHoursStartedAtSunday[(n+4)%7];
+        document.getElementById("off5sub").textContent=openingHoursStartedAtSunday[(n+5)%7];
+        document.getElementById("off6sub").textContent=openingHoursStartedAtSunday[(n+6)%7];
+        
+        document.getElementById("lastupdate").textContent="Letztes Update: "+days[(n-1)%7]+", "+getDateAsString(-1)+", Nächstes Update: "+days[(n+1)%7]+", "+getDateAsString(+1);
+        document.getElementById("updateinfo").textContent="Aktuelle Öffnungszeiten finden Sie immer auch auf unserer Webseite www.float-schwabing.de , Google, GooglePlus und Facebook.";
+        document.getElementById("website").textContent="www.float-schwabing.de";
+        
+    }	
+  });
+}
+
+function getDateAsString(offset) {
+	var today = new Date();
+	var dd = today.getDate()+offset;
+	var mm = today.getMonth()+1; 
+	var yyyy = today.getFullYear();
+	if(dd<10) {
+    	dd='0'+dd
+	} 
+	if(mm<10) {
+    	mm='0'+mm
+	} 
+	today = dd+'.'+mm+'.'+yyyy;
+	return today;
+}
+
+function parseTime(str) {
+	var hour = str.substring(0, 2);
+	var minute = str.substring(2, 4);
+	var time = hour + ":" + minute;
+	return time;
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
