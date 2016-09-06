@@ -30,6 +30,7 @@
 
 <div class="table">
 <div class="days">
+<div class="off1up"><span id="off0up"></span></div>
 <div class="off1up"><span id="off1up"></span></div>
 <div class="off1up"><span id="off2up"></span></div>
 <div class="off1up"><span id="off3up"></span></div>
@@ -39,6 +40,7 @@
 </div>
 
 <div class="times">
+<div class="off1sub"><span id="off0sub"> wird geladen</span></div>
 <div class="off1sub"><span id="off1sub"> wird geladen</span></div>
 <div class="off1sub"><span id="off2sub"> wird geladen</span></div>
 <div class="off1sub"><span id="off3sub"> wird geladen</span></div>
@@ -148,7 +150,7 @@
       	color: #00AFED;
       	font-size: 25px;
       	padding-left: 65px;
-      	padding-bottom: 85px;
+      	padding-bottom: 95px;
       	font-family: verdana, sans-serif;
       }
       div.updateinfo {
@@ -171,7 +173,7 @@
       div.daycontainer {
       	padding-top: 40px;
       }
-      div.table{
+      div.table {
       	padding-top: 30px;
       }
       div.footer{
@@ -189,6 +191,11 @@ function initialize() {
     center: new google.maps.LatLng(48.139,11.566),
     zoom: 15
   });
+  
+  var dateForDesc = new Date();
+  var dayForDesc = dateForDesc.getDay();
+  var days = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+  document.getElementById("desc").textContent = "Heute ("+days[dayForDesc]+"):";
 
   var request = {
     placeId: "ChIJRWpFf7l1nkcRrbySOgR_9Ro"//"ChIJRWpFf7l1nkcRrbySOgR_9Ro" //"ChIJgS1r2XjfnUcRf-PBJikY7w4"
@@ -202,19 +209,19 @@ function initialize() {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       console.log(place)
     	
+    	var d = new Date();
+		var n = d.getDay();
+    	
     	var openingHoursStartedAtSunday = new Array("geschlossen", "geschlossen", "geschlossen", "geschlossen", 'geschlossen' , "geschlossen", "geschlossen"); 
     	
 		for (var i = 0; i < 7; i++) {
  		 var day = place.opening_hours.periods[i].open.day;
  		 openingHoursStartedAtSunday[day] = parseTime(place.opening_hours.periods[i].open.time)+" - "+parseTime(place.opening_hours.periods[i].close.time);
 		}
-    	
-    	var d = new Date();
-		var n = d.getDay();
-		var days = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
 		
 		document.getElementById("off0").textContent = openingHoursStartedAtSunday[n];
 		
+        document.getElementById("off0up").textContent=days[(n)%7]+": ";
         document.getElementById("off1up").textContent=days[(n+1)%7]+": ";
         document.getElementById("off2up").textContent=days[(n+2)%7]+": ";
         document.getElementById("off3up").textContent=days[(n+3)%7]+": ";
@@ -222,6 +229,7 @@ function initialize() {
         document.getElementById("off5up").textContent=days[(n+5)%7]+": ";
         document.getElementById("off6up").textContent=days[(n+6)%7]+": ";
         
+        document.getElementById("off0sub").textContent=openingHoursStartedAtSunday[(n)%7];
         document.getElementById("off1sub").textContent=openingHoursStartedAtSunday[(n+1)%7];
         document.getElementById("off2sub").textContent=openingHoursStartedAtSunday[(n+2)%7];
         document.getElementById("off3sub").textContent=openingHoursStartedAtSunday[(n+3)%7];
@@ -229,7 +237,14 @@ function initialize() {
         document.getElementById("off5sub").textContent=openingHoursStartedAtSunday[(n+5)%7];
         document.getElementById("off6sub").textContent=openingHoursStartedAtSunday[(n+6)%7];
         
-        document.getElementById("lastupdate").textContent="Letztes Update: "+days[(n-1)%7]+", "+getDateAsString(-1)+", Nächstes Update: "+days[(n+1)%7]+", "+getDateAsString(+1);
+        var placeholderDay = "";
+        
+        if(n-1<0) {
+        	placeholderDay = "Samstag";
+        } else {
+        	placeholderDay = days[(n-1)%7];
+        }
+        document.getElementById("lastupdate").textContent="Letztes Update: "+placeholderDay+", "+getDateAsString(-1)+", Nächstes Update: "+days[(n+1)%7]+", "+getDateAsString(+1);
         document.getElementById("updateinfo").textContent="Aktuelle Öffnungszeiten finden Sie immer auch auf unserer Webseite www.float-schwabing.de , Google, GooglePlus und Facebook.";
         document.getElementById("website").textContent="www.float-schwabing.de";
         
